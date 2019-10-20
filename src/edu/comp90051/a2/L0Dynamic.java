@@ -1,6 +1,7 @@
 package edu.comp90051.a2;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class L0Dynamic {
         int L = (int) Math.ceil(Math.log1p(n));
         K = new KSparse[L];
         for (int i = 0; i < L; i++)
-            K[i] = new KSparse(k, 5);
+            K[i] = new KSparse(k, (int) Math.round(Math.log(k / 0.05)));
     }
 
     public void update(int item, int freqDelta) {
@@ -63,10 +64,10 @@ public class L0Dynamic {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        final int N = 0xFFFF;
+        final int N = (int) Math.pow(2, 20);
         final int NON_ZERO_ITEM_SIZE = 10 * 10 * 10;
-        final int SAMPLING_SIZE = 1 * NON_ZERO_ITEM_SIZE;
-        final int BATCH_SIZE = 100;
+        final int SAMPLING_SIZE = 10 * NON_ZERO_ITEM_SIZE;
+        final int BATCH_SIZE = 10;
 
         Map<Object, Integer> counter = new HashMap<>();
         int[] FailCounter = new int[1];
@@ -106,7 +107,14 @@ public class L0Dynamic {
             StdOut.println("Batch " + (j + 1) + " Finished.");
         }
 
-        StdOut.println(MapUtil.sortByValue(counter));
+        try (
+                PrintWriter output = new PrintWriter(Path.of("./output/l0_Dynamic_Default.csv").toFile())) {
+            for (Map.Entry<Object, Integer> entry : counter.entrySet())
+                output.println(entry.getKey() + "," + entry.getValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         StdOut.println("FailCounter " + FailCounter[0]);
+        StdOut.println(MapUtil.sortByValue(counter));
     }
 }

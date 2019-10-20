@@ -18,7 +18,7 @@ public class KSparse {
 
     public KSparse(int k, int d) {
         this.k = k;
-//        StdOut.println("d " + d);
+        StdOut.println("d " + d);
         this.h = new FastHash[d];
         this.p = (2 * k < FastHash.MERSENNE_PRIME17) ? FastHash.MERSENNE_PRIME17 : FastHash.MERSENNE_PRIME31;
         for (int i = 0; i < d; i++) {
@@ -80,16 +80,45 @@ public class KSparse {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        final int SUPP_VECTOR_SIZE = (int) 1e4;
+        final int SUPP_VECTOR_SIZE = 1000;
         final int N_EXP = 10;
         final int BATCH_SIZE = 20;
 
         int[] eval_metrics = new int[3];     // [0] Successfully Retrieved   [1] Not Sparse  [2] Wrong Retrieve
+        long t1 = System.currentTimeMillis();
+//        for (int i= 0; i < 10; i++) {
+//            KSparse kSparse = new KSparse(SUPP_VECTOR_SIZE, 3);
+//            Path data = Path.of("dataset/KSparse_stream_small_size.csv");
+//            try {
+//                Files.lines(data)
+//                        .forEach(line -> {
+//                            String[] record = line.split(",");
+//                            kSparse.update(Integer.parseInt(record[0]), Integer.parseInt(record[1]));
+//                        });
+//                try {
+//                    Integer[][] output = kSparse.output();
+//                    synchronized (eval_metrics) {
+//                        eval_metrics[0]++;
+//                    }
+//                } catch (NotSparseException e) {
+//                    synchronized (eval_metrics) {
+//                        eval_metrics[1]++;
+//                    }
+//                } catch (WrongRetrieveException e) {
+//                    synchronized (eval_metrics) {
+//                        eval_metrics[2]++;
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
         for (int j = 0; j < BATCH_SIZE; j++) {
             ExecutorService exec = Executors.newCachedThreadPool();
             for (int i = 0; i < N_EXP; i++) {
                 exec.execute(() -> {
-                    KSparse kSparse = new KSparse(SUPP_VECTOR_SIZE, 3);
+                    KSparse kSparse = new KSparse(SUPP_VECTOR_SIZE, (int) Math.round(Math.log(SUPP_VECTOR_SIZE / 0.05)));
                     Path data = Path.of("dataset/KSparse_stream_small_size.csv");
                     try {
                         Files.lines(data)
@@ -123,6 +152,6 @@ public class KSparse {
 
             StdOut.println(Arrays.toString(eval_metrics));
         }
-
+        System.out.println(System.currentTimeMillis() - t1);
     }
 }
