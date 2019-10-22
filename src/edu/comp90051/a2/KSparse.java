@@ -81,7 +81,7 @@ public class KSparse {
 
     public static void main(String[] args) throws InterruptedException {
         final int SUPP_VECTOR_SIZE = 1000;
-        final int N_EXP = 10;
+        final int SAMPLE_SIZE = 10;
         final int BATCH_SIZE = 20;
 
         int[] eval_metrics = new int[3];     // [0] Successfully Retrieved   [1] Not Sparse  [2] Wrong Retrieve
@@ -116,7 +116,7 @@ public class KSparse {
 
         for (int j = 0; j < BATCH_SIZE; j++) {
             ExecutorService exec = Executors.newCachedThreadPool();
-            for (int i = 0; i < N_EXP; i++) {
+            for (int i = 0; i < SAMPLE_SIZE; i++) {
                 exec.execute(() -> {
                     KSparse kSparse = new KSparse(SUPP_VECTOR_SIZE, (int) Math.round(Math.log(SUPP_VECTOR_SIZE / 0.05)));
                     Path data = Path.of("dataset/KSparse_stream_small_size.csv");

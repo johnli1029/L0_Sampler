@@ -35,72 +35,72 @@ public class L0Insertion implements L0Sampler {
     }
 
     public static void main(String[] args) throws Exception {
-        final int STREAM_SIZE = (int) Math.pow(2, 20);
-        final int NON_ZERO_ITEM_SIZE = (int) Math.pow(2, 10);
-        final int SAMPLING_SIZE = 20 * NON_ZERO_ITEM_SIZE;
-//        final int SAMPLING_SIZE = 10;
+        final int UNIVERSE_SIZE = 0x100000;
+        final int SUPP_VECTOR_SIZE = 1000;
+        final int SAMPLING_SIZE = 20 * SUPP_VECTOR_SIZE;
         final int BATCH_SIZE = 10;
         double t1 = System.currentTimeMillis();
 
         Map<Object, Integer> counter = new HashMap<>();
-//        for (int i = 0; i < 10; i++) {
-//            L0Insertion insertionSampler = new L0Insertion(STREAM_SIZE, 2);
-//            Path data = Path.of("dataset/insert_only_stream.csv");
-//            try {
-//                Files.lines(data)
-//                        .skip(1)
-//                        .forEach(line -> {
-//                            String[] record = line.split(",");
-//                            insertionSampler.update(record[0], Integer.parseInt(record[1]));
-//                        });
-//                Object a = insertionSampler.output();
-//                synchronized (counter) {
-//                    counter.put(a, counter.getOrDefault(a, 0) + 1);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-
-
-        for (int j = 0; j < BATCH_SIZE; j++) {
-            ExecutorService exec = Executors.newCachedThreadPool();
-            for (int i = 0; i < SAMPLING_SIZE; i++) {
-                exec.execute(() -> {
-                    L0Insertion insertionSampler = new L0Insertion(STREAM_SIZE, 5);
-                    Path data = Path.of("dataset/insert_only_stream.csv");
-                    try {
-                        Files.lines(data)
-                                .skip(1)
-                                .forEach(line -> {
-                                    String[] record = line.split(",");
-                                    insertionSampler.update(record[0], Integer.parseInt(record[1]));
-                                });
-                        Object a = insertionSampler.output();
-                        synchronized (counter) {
-                            counter.put(a, counter.getOrDefault(a, 0) + 1);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+        for (int i = 0; i < SAMPLING_SIZE; i++) {
+            L0Insertion insertionSampler = new L0Insertion(UNIVERSE_SIZE, 2);
+            Path data = Path.of("dataset/insert_only_stream.csv");
+            try {
+                Files.lines(data)
+                        .skip(1)
+                        .forEach(line -> {
+                            String[] record = line.split(",");
+                            insertionSampler.update(record[0], Integer.parseInt(record[1]));
+                        });
+                Object a = insertionSampler.output();
+                synchronized (counter) {
+                    counter.put(a, counter.getOrDefault(a, 0) + 1);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            exec.shutdown();
-            while (!exec.isTerminated()) {
-                Thread.sleep(500);
-            }
-            StdOut.println("Batch " + (j + 1) + " Finished");
         }
-
         System.out.println(System.currentTimeMillis() - t1);
-        try (
-                PrintWriter output = new PrintWriter(Path.of("./output/l0_insertion_5.csv").toFile())) {
-            for (Map.Entry<Object, Integer> entry : counter.entrySet())
-                output.println(entry.getKey() + "," + entry.getValue());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         StdOut.println(MapUtil.sortByValue(counter));
+
+//        Map<Object, Integer> counter = new HashMap<>();
+//        for (int j = 0; j < BATCH_SIZE; j++) {
+//            ExecutorService exec = Executors.newCachedThreadPool();
+//            for (int i = 0; i < SAMPLING_SIZE; i++) {
+//                exec.execute(() -> {
+//                    L0Insertion insertionSampler = new L0Insertion(STREAM_SIZE, 5);
+//                    Path data = Path.of("dataset/insert_only_stream.csv");
+//                    try {
+//                        Files.lines(data)
+//                                .skip(1)
+//                                .forEach(line -> {
+//                                    String[] record = line.split(",");
+//                                    insertionSampler.update(record[0], Integer.parseInt(record[1]));
+//                                });
+//                        Object a = insertionSampler.output();
+//                        synchronized (counter) {
+//                            counter.put(a, counter.getOrDefault(a, 0) + 1);
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//            }
+//            exec.shutdown();
+//            while (!exec.isTerminated()) {
+//                Thread.sleep(500);
+//            }
+//            StdOut.println("Batch " + (j + 1) + " Finished");
+//        }
+//
+//        System.out.println(System.currentTimeMillis() - t1);
+//        try (
+//                PrintWriter output = new PrintWriter(Path.of("./output/l0_insertion_5.csv").toFile())) {
+//            for (Map.Entry<Object, Integer> entry : counter.entrySet())
+//                output.println(entry.getKey() + "," + entry.getValue());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        StdOut.println(MapUtil.sortByValue(counter));
     }
 }

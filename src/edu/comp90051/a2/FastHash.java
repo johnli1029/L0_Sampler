@@ -5,7 +5,7 @@ import java.math.BigInteger;
 public class FastHash extends T_Wise_Hash {
     public static long MERSENNE_PRIME17 = 0x1FFFF;
     public static long MERSENNE_PRIME31 = 0x7FFFFFFF;
-    public static long MERSENNE_PRIME61 = new BigInteger("1000000000000000", 16).longValue() - 1;
+    public static long MERSENNE_PRIME61 = new BigInteger("2000000000000000", 16).longValue() - 1;
 
     private int shift;
 
@@ -58,9 +58,13 @@ public class FastHash extends T_Wise_Hash {
         return x;
     }
 
+    public static long foo(long x) {
+        return mod61(mod61(x + 1) - 1);
+    }
+
     public static void main(String[] args) {
         final int N = (int) Math.pow(2, 20);
-        FastHash tHash = new FastHash(5, MERSENNE_PRIME61, (long)N*N*N);
+        FastHash tHash = new FastHash(5, MERSENNE_PRIME61, (long) N * N * N);
 
 //        Map<String, Integer> counter = new HashMap<>();
 //        for (int i = 0; i < 1000000; i++) {

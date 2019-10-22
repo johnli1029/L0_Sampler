@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -64,76 +65,87 @@ public class L0Dynamic {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        final int N = (int) Math.pow(2, 20);
-        final int NON_ZERO_ITEM_SIZE = 10 * 10 * 10;
-        final int SAMPLING_SIZE = 200 * NON_ZERO_ITEM_SIZE;
+        final int UNIVERSE_SIZE = (int) Math.pow(2, 20);
+        final int SUPP_VECTOR_SIZE = 10 * 10 * 10;
+        final int SAMPLING_SIZE = 200 * SUPP_VECTOR_SIZE;
         final int BATCH_SIZE = 10;
 
+        double t1 = System.currentTimeMillis();
         Map<Object, Integer> counter = new HashMap<>();
         int[] FailCounter = new int[1];
-
-        for (int j = 0; j < BATCH_SIZE; j++) {
-            ExecutorService exec = Executors.newCachedThreadPool();
-            for (int i = 0; i < SAMPLING_SIZE; i++) {
-                exec.execute(() -> {
-                    L0Dynamic l0Dynamic = new L0Dynamic(N, 0.05);
-                    Path data = Path.of("dataset/L0Dynamic_Mini.csv");
-                    try {
-                        Files.lines(data)
-                                .forEach(line -> {
-                                    String[] record = line.split(",");
-                                    l0Dynamic.update(Integer.parseInt(record[0]), Integer.parseInt(record[1]));
-                                });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        int sampledItem = l0Dynamic.output();
-                        synchronized (counter) {
-                            counter.put(sampledItem, counter.getOrDefault(sampledItem, 0) + 1);
-                        }
-                    } catch (FailToRetrieveException e) {
-                        synchronized (FailCounter) {
-                            FailCounter[0]++;
-                        }
-                    }
-                });
+        for (int i = 0; i < SAMPLING_SIZE; i++) {
+            L0Turnstile l0Turnstile = new L0Turnstile(UNIVERSE_SIZE, 0.05);
+            Path data = Path.of("dataset/insert_only_stream.csv");
+            try {
+                Files.lines(data)
+                        .skip(1)
+                        .forEach(line -> {
+                            String[] record = line.split(",");
+                            l0Turnstile.update(Integer.parseInt(record[0]), Integer.parseInt(record[1]));
+                        });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            exec.shutdown();
-            while (!exec.isTerminated()) {
-                Thread.sleep(500);
+
+            try {
+                int sampledItem = l0Turnstile.output();
+                synchronized (counter) {
+                    counter.put(sampledItem, counter.getOrDefault(sampledItem, 0) + 1);
+                }
+            } catch (FailToRetrieveException e) {
+                synchronized (FailCounter) {
+                    FailCounter[0]++;
+                }
             }
-            StdOut.println("Batch " + (j + 1) + " Finished.");
         }
 
-        try (
-                PrintWriter output = new PrintWriter(Path.of("./output/l0_Dynamic_Default.csv").toFile())) {
-            for (Map.Entry<Object, Integer> entry : counter.entrySet())
-                output.println(entry.getKey() + "," + entry.getValue());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        StdOut.println("FailCounter " + FailCounter[0]);
+        System.out.println(System.currentTimeMillis() - t1);
         StdOut.println(MapUtil.sortByValue(counter));
+        StdOut.println(FailCounter[0]);
 
-
-//        L0Dynamic l0Dynamic = new L0Dynamic(N, 0.05);
-//        Path data = Path.of("dataset/L0Dynamic_Mini.csv");
-//        try {
-//            Files.lines(data)
-//                    .forEach(line -> {
-//                        String[] record = line.split(",");
-//                        l0Dynamic.update(Integer.parseInt(record[0]), Integer.parseInt(record[1]));
-//                    });
-//        } catch (IOException e) {
-//            e.printStackTrace();
+//        for (int j = 0; j < BATCH_SIZE; j++) {
+//            ExecutorService exec = Executors.newCachedThreadPool();
+//            for (int i = 0; i < SAMPLING_SIZE; i++) {
+//                exec.execute(() -> {
+//                    L0Dynamic l0Dynamic = new L0Dynamic(UNIVERSE_SIZE, 0.05);
+//                    Path data = Path.of("dataset/L0Dynamic_Mini.csv");
+//                    try {
+//                        Files.lines(data)
+//                                .forEach(line -> {
+//                                    String[] record = line.split(",");
+//                                    l0Dynamic.update(Integer.parseInt(record[0]), Integer.parseInt(record[1]));
+//                                });
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    try {
+//                        int sampledItem = l0Dynamic.output();
+//                        synchronized (counter) {
+//                            counter.put(sampledItem, counter.getOrDefault(sampledItem, 0) + 1);
+//                        }
+//                    } catch (FailToRetrieveException e) {
+//                        synchronized (FailCounter) {
+//                            FailCounter[0]++;
+//                        }
+//                    }
+//                });
+//            }
+//            exec.shutdown();
+//            while (!exec.isTerminated()) {
+//                Thread.sleep(500);
+//            }
+//            StdOut.println("Batch " + (j + 1) + " Finished.");
 //        }
 //
-//        try {
-//            StdOut.println(l0Dynamic.output());
-//        } catch (FailToRetrieveException e) {
-//            StdOut.println("Error");
+//        try (
+//                PrintWriter output = new PrintWriter(Path.of("./output/l0_Dynamic_Default.csv").toFile())) {
+//            for (Map.Entry<Integer, Integer> entry : counter.entrySet())
+//                output.println(entry.getKey() + "," + entry.getValue());
+//        } catch (Exception e) {
+//            e.printStackTrace();
 //        }
+//        StdOut.println("FailCounter " + FailCounter[0]);
+//        StdOut.println(MapUtil.sortByValue(counter));
     }
 }
