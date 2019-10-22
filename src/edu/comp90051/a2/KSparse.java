@@ -18,7 +18,7 @@ public class KSparse {
 
     public KSparse(int k, int d) {
         this.k = k;
-        StdOut.println("d " + d);
+//        StdOut.println("d " + d);
         this.h = new FastHash[d];
         this.p = (2 * k < FastHash.MERSENNE_PRIME17) ? FastHash.MERSENNE_PRIME17 : FastHash.MERSENNE_PRIME31;
         for (int i = 0; i < d; i++) {

@@ -1,8 +1,6 @@
 package edu.comp90051.a2;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FastHash extends T_Wise_Hash {
     public static long MERSENNE_PRIME17 = 0x1FFFF;
@@ -13,6 +11,7 @@ public class FastHash extends T_Wise_Hash {
 
     public FastHash(int t, long p, long range) {
         super(t, p, range);
+//        System.out.println(range);
         if (p == MERSENNE_PRIME17)
             shift = 17;
         else if (p == MERSENNE_PRIME31)
@@ -60,6 +59,9 @@ public class FastHash extends T_Wise_Hash {
     }
 
     public static void main(String[] args) {
+        final int N = (int) Math.pow(2, 20);
+        FastHash tHash = new FastHash(5, MERSENNE_PRIME61, (long)N*N*N);
+
 //        Map<String, Integer> counter = new HashMap<>();
 //        for (int i = 0; i < 1000000; i++) {
 //            FastHash tHash = new FastHash(4, FastHash.MERSENNE_PRIME31, 10);
@@ -68,6 +70,6 @@ public class FastHash extends T_Wise_Hash {
 //        }
 //        StdOut.println(MapUtil.sortByValue(counter));
 
-        System.out.println(mod31(-2));
+//        System.out.println(mod31(-2));
     }
 }

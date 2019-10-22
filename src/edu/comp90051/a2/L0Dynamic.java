@@ -18,7 +18,7 @@ public class L0Dynamic {
         this.n = n;
         int k = (int) Math.round(12 * Math.log1p(1 / delta));
         int t = k / 2;
-        h = new FastHash(t, FastHash.MERSENNE_PRIME61, n * n * n);
+        h = new FastHash(t, FastHash.MERSENNE_PRIME61, (long) n * n * n);
 
         int L = (int) Math.ceil(Math.log1p(n));
         K = new KSparse[L];
@@ -29,7 +29,7 @@ public class L0Dynamic {
     public void update(int item, int freqDelta) {
         int l = 0;
         long hashVal = h.hash(item);
-        long scope = n * n * n;
+        long scope = (long) n * n * n;
         while (l < K.length && scope >= hashVal) {
             K[l].update(item, freqDelta);
             l++;
@@ -66,7 +66,7 @@ public class L0Dynamic {
     public static void main(String[] args) throws InterruptedException {
         final int N = (int) Math.pow(2, 20);
         final int NON_ZERO_ITEM_SIZE = 10 * 10 * 10;
-        final int SAMPLING_SIZE = 10 * NON_ZERO_ITEM_SIZE;
+        final int SAMPLING_SIZE = 200 * NON_ZERO_ITEM_SIZE;
         final int BATCH_SIZE = 10;
 
         Map<Object, Integer> counter = new HashMap<>();
@@ -116,5 +116,24 @@ public class L0Dynamic {
         }
         StdOut.println("FailCounter " + FailCounter[0]);
         StdOut.println(MapUtil.sortByValue(counter));
+
+
+//        L0Dynamic l0Dynamic = new L0Dynamic(N, 0.05);
+//        Path data = Path.of("dataset/L0Dynamic_Mini.csv");
+//        try {
+//            Files.lines(data)
+//                    .forEach(line -> {
+//                        String[] record = line.split(",");
+//                        l0Dynamic.update(Integer.parseInt(record[0]), Integer.parseInt(record[1]));
+//                    });
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            StdOut.println(l0Dynamic.output());
+//        } catch (FailToRetrieveException e) {
+//            StdOut.println("Error");
+//        }
     }
 }
