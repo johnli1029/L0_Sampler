@@ -7,7 +7,7 @@
  *
  ******************************************************************************/
 
-package edu.comp90051.a2;
+package edu.comp90051.l0sampler;
 
 import edu.princeton.cs.algs4.BinaryStdOut;
 import edu.princeton.cs.algs4.StdIn;

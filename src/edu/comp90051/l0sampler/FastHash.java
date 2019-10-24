@@ -1,8 +1,8 @@
-package edu.comp90051.a2;
+package edu.comp90051.l0sampler;
 
 import java.math.BigInteger;
 
-public class FastHash extends T_Wise_Hash {
+public class FastHash extends TWiseHash {
     public static long MERSENNE_PRIME17 = 0x1FFFF;
     public static long MERSENNE_PRIME31 = 0x7FFFFFFF;
     public static long MERSENNE_PRIME61 = new BigInteger("2000000000000000", 16).longValue() - 1;
@@ -11,7 +11,6 @@ public class FastHash extends T_Wise_Hash {
 
     public FastHash(int t, long p, long range) {
         super(t, p, range);
-//        System.out.println(range);
         if (p == MERSENNE_PRIME17)
             shift = 17;
         else if (p == MERSENNE_PRIME31)

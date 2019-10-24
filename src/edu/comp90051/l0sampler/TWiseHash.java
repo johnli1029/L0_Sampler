@@ -1,16 +1,14 @@
-package edu.comp90051.a2;
+package edu.comp90051.l0sampler;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
-public class T_Wise_Hash {
+public class TWiseHash {
     protected long p;     // A large prime larger than max(n, r)
     protected long[] a;
     protected long range;
 
-    public T_Wise_Hash(int t, long p, long range) {
+    public TWiseHash(int t, long p, long range) {
         this.p = p;
         this.range = range;
         a = new long[t];
@@ -36,7 +34,7 @@ public class T_Wise_Hash {
     public static void main(String[] args) {
         Map<String, Integer> counter = new HashMap<>();
         for (int i = 0; i < 1000000; i++) {
-            T_Wise_Hash tHash = new T_Wise_Hash(2, FastHash.MERSENNE_PRIME31, 10);
+            TWiseHash tHash = new TWiseHash(2, FastHash.MERSENNE_PRIME31, 10);
             String key = Long.toString(tHash.hash(25));
             counter.put(key, counter.getOrDefault(key, 0) + 1);
         }

@@ -1,4 +1,4 @@
-package edu.comp90051.a2;
+package edu.comp90051.l0sampler;
 
 import java.io.IOException;
 import java.nio.file.Files;

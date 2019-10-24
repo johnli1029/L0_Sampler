@@ -1,4 +1,4 @@
-package edu.comp90051.a2;
+package edu.comp90051.l0sampler;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -82,13 +82,13 @@ public class KSparse {
     public static void main(String[] args) throws InterruptedException {
         final int SUPP_VECTOR_SIZE = 1000;
         final int SAMPLE_SIZE = 10;
-        final int BATCH_SIZE = 20;
+        final int BATCH_SIZE = 10;
 
         int[] eval_metrics = new int[3];     // [0] Successfully Retrieved   [1] Not Sparse  [2] Wrong Retrieve
         long t1 = System.currentTimeMillis();
 //        for (int i= 0; i < 10; i++) {
 //            KSparse kSparse = new KSparse(SUPP_VECTOR_SIZE, 3);
-//            Path data = Path.of("dataset/KSparse_stream_small_size.csv");
+//            Path data = Path.of("dataset/Dynamic_stream.csv");
 //            try {
 //                Files.lines(data)
 //                        .forEach(line -> {
@@ -118,8 +118,8 @@ public class KSparse {
             ExecutorService exec = Executors.newCachedThreadPool();
             for (int i = 0; i < SAMPLE_SIZE; i++) {
                 exec.execute(() -> {
-                    KSparse kSparse = new KSparse(SUPP_VECTOR_SIZE, (int) Math.round(Math.log(SUPP_VECTOR_SIZE / 0.05)));
-                    Path data = Path.of("dataset/KSparse_stream_small_size.csv");
+                    KSparse kSparse = new KSparse(3*SUPP_VECTOR_SIZE, 5 );
+                    Path data = Path.of("dataset/Dynamic_stream.csv");
                     try {
                         Files.lines(data)
                                 .forEach(line -> {

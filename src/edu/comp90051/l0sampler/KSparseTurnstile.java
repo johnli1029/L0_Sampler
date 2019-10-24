@@ -1,4 +1,4 @@
-package edu.comp90051.a2;
+package edu.comp90051.l0sampler;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -78,7 +78,7 @@ public class KSparseTurnstile {
         int[] eval_metrics = new int[3];     // [0] Successfully Retrieved   [1] Not Sparse  [2] Wrong Retrieve
         for (int i = 0; i < 100; i++) {
             KSparseTurnstile kSparse = new KSparseTurnstile(SUPP_VECTOR_SIZE, (int) Math.round(Math.log(SUPP_VECTOR_SIZE / 0.05)));
-            Path data = Path.of("dataset/insert_only_stream.csv");
+            Path data = Path.of("dataset/Insertion-only_stream.csv");
             try {
                 Files.lines(data)
                         .skip(1)
