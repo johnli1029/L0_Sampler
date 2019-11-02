@@ -1,5 +1,7 @@
 package edu.comp90051.l0sampler;
 
+import edu.comp90051.utils.MapUtil;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -15,8 +17,8 @@ public class L0Insertion implements L0Sampler {
   /**
    * Initializes a basic l0 Sampler only working with insertion-only (Positive frequency items only) input streams
    *
-   * @param n the item universe size
-   * @param t the dependency cardinality of hash function
+   * @param n item universe size
+   * @param t dependency cardinality of hash function
    */
 
   public L0Insertion(int n, int t) {
@@ -47,7 +49,7 @@ public class L0Insertion implements L0Sampler {
   /**
    * Output the sampled item in the l0 distribution
    *
-   * @return object
+   * @return Sampled item (Or its ID)
    */
   @Override
   public Integer output() throws IllegalStateException {

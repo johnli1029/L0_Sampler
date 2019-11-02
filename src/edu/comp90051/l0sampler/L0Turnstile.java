@@ -1,5 +1,7 @@
 package edu.comp90051.l0sampler;
 
+import edu.comp90051.utils.MapUtil;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
