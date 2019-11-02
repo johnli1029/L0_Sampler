@@ -1,5 +1,8 @@
 package edu.comp90051.l0sampler;
 
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

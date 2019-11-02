@@ -1,5 +1,7 @@
 package edu.comp90051.l0sampler;
 
+
+import edu.princeton.cs.algs4.StdOut;
 import edu.comp90051.utils.MapUtil;
 
 import java.math.BigInteger;

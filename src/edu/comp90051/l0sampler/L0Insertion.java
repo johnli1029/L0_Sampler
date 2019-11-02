@@ -1,6 +1,7 @@
 package edu.comp90051.l0sampler;
 
 import edu.comp90051.utils.MapUtil;
+import edu.princeton.cs.algs4.StdOut;
 
 import java.io.*;
 import java.nio.file.Path;
