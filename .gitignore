@@ -1,0 +1,15 @@
+# IntelliJ IDE relevant
+.idea/
+
+## compiled .class files
+out/
+
+## Gradle and Maven with auto-import
+*.iml
+*.ipr
+
+# jupyter notebook relevant
+.ipynb_checkpoints
+
+# output results
+output/
